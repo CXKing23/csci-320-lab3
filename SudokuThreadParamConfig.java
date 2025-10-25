@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 public class SudokuThreadParamConfig {
     private int id;
     private int starting_row;
@@ -43,5 +45,11 @@ public class SudokuThreadParamConfig {
 
     public int[] getWorkerValidation() {
         return worker_validation;
+    }
+     @Override
+    public String toString() {
+        return 
+               "id=" + id +
+               ", area=[" + (starting_row+1) + ":" + (ending_row+1) + ", " + (starting_col+1) + ":" + (ending_col+1) + "]";
     }
 }

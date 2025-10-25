@@ -1,21 +1,29 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.nio.channels.Pipe.SourceChannel;
 import java.util.Scanner;
 
 public class SudokuBoardReader {
     public int[][] sudoku_board;
     public int[] worker_validation;
+    private boolean debugMode;
 
-    public SudokuBoardReader(String fileName){
+    public SudokuBoardReader(String fileName, boolean debugMode){
+        this.debugMode = debugMode;
         this.sudoku_board = readBoardFromFile(fileName);
         this.worker_validation = new int[SudokuConfig.NUM_OF_THREADS];
     }
 
     private int[][] readBoardFromFile(String fileName){
+       
+        
         File boardCSV = new File(fileName);
         int[][] board = new int[SudokuConfig.ROW_SIZE][SudokuConfig.COL_SIZE];    
 
         try(Scanner fileReader = new Scanner(boardCSV)){
+            if (debugMode) {
+                System.out.printf("Success: Creating Board from File %s %n", fileName);
+            }
             int row = 0;
             while (fileReader.hasNextLine()){
                 String rowData = fileReader.nextLine();
@@ -31,7 +39,15 @@ public class SudokuBoardReader {
             System.out.printf("Error: File %s not found%n", fileName);
             e.printStackTrace();
         }
-        
+        if(debugMode){
+            System.out.println("Board Layout: ");
+            for (int i = 0; i < board.length; i++) {
+                for (int j = 0; j < board[i].length; j++) {
+                    System.out.print(board[i][j] + " ");
+                }
+                System.out.println();
+            }
+        }
         return board;
     }
 
@@ -80,9 +96,14 @@ public class SudokuBoardReader {
                 sudoku_board, 
                 worker_validation
             );
+           
             SudokuRegionValidatorTask task = new SudokuRegionValidatorTask(params);
             
             Thread thread = new Thread(task);
+             if(debugMode){
+                System.out.print("Created new Thread with:");
+                System.out.println(params.toString());
+            }
 
             thread.start();
 
