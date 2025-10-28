@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <pthread.h>
 #include <stdlib.h>
-#include "lab2.h"
+#include "lab3.h"
 
 int** sudoku_board;
 int* worker_validation;
